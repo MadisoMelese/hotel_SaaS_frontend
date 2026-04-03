@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { MainLayout } from '../layouts/MainLayout'
-import { Card, CardHeader, CardBody, Button, Input, Select, Table, TableHead, TableBody, TableRow, TableHeader, TableCell, Modal, Loading, Alert } from '../components'
+import { Card, CardBody, Button, Input, Select, Table, TableHead, TableBody, TableRow, TableHeader, TableCell, Modal, Loading, Alert } from '../components'
 import { useBookings, useCreateBooking, useConfirmBooking, useCheckIn, useCheckOut, useCancelBooking } from '../hooks/useBookings'
 import { useRooms } from '../hooks/useRooms'
 import { useGuests } from '../hooks/useGuests'
