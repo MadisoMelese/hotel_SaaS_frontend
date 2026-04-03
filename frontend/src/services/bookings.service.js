@@ -3,7 +3,8 @@ import api from './api'
 export const bookingsService = {
   getBookings: async (filters = {}) => {
     const response = await api.get('/bookings', { params: filters })
-    return response.data.data
+    // Backend returns { data: { data: [...], pagination: {...} } }
+    return response.data.data.data || []
   },
 
   getBooking: async (id) => {
