@@ -3,7 +3,8 @@ import api from './api'
 export const roomsService = {
   getRooms: async (filters = {}) => {
     const response = await api.get('/rooms', { params: filters })
-    return response.data.data
+    // Backend returns { data: { data: [...], pagination: {...} } }
+    return response.data.data.data || []
   },
 
   getRoom: async (id) => {
