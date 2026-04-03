@@ -3,7 +3,8 @@ import api from './api'
 export const guestsService = {
   getGuests: async (filters = {}) => {
     const response = await api.get('/guests', { params: filters })
-    return response.data.data
+    // Backend returns { data: { data: [...], pagination: {...} } }
+    return response.data.data.data || []
   },
 
   getGuest: async (id) => {
