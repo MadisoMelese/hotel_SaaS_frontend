@@ -41,10 +41,10 @@ export const Sidebar = () => {
         {isOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
-      {/* Sidebar - only visible on mobile/tablet */}
+      {/* Sidebar - visible on all devices when open */}
       <aside
         className={clsx(
-          'fixed left-0 top-0 h-screen w-64 bg-gray-900 text-white transition-transform duration-300 z-30 lg:hidden',
+          'fixed left-0 top-0 h-screen w-64 bg-gray-900 text-white transition-transform duration-300 z-30',
           isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
@@ -86,10 +86,10 @@ export const Sidebar = () => {
         </div>
       </aside>
 
-      {/* Mobile overlay */}
+      {/* Overlay - visible on all devices when sidebar is open */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 lg:hidden z-20"
+          className="fixed inset-0 bg-black bg-opacity-50 z-20"
           onClick={() => setIsOpen(false)}
         />
       )}
