@@ -5,6 +5,9 @@ import { ProtectedRoute } from './ProtectedRoute'
 import { LoginPage } from '../pages/LoginPage'
 import { RegisterPage } from '../pages/RegisterPage'
 import { DashboardPage } from '../pages/DashboardPage'
+import { DashboardStatsPage } from '../pages/DashboardStatsPage'
+import { DashboardOccupancyPage } from '../pages/DashboardOccupancyPage'
+import { DashboardBookingsPage } from '../pages/DashboardBookingsPage'
 import { RoomsPage } from '../pages/RoomsPage'
 import { BookingsPage } from '../pages/BookingsPage'
 import { GuestsPage } from '../pages/GuestsPage'
@@ -24,6 +27,30 @@ export const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/stats"
+          element={
+            <ProtectedRoute>
+              <DashboardStatsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/occupancy"
+          element={
+            <ProtectedRoute>
+              <DashboardOccupancyPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/bookings"
+          element={
+            <ProtectedRoute>
+              <DashboardBookingsPage />
             </ProtectedRoute>
           }
         />

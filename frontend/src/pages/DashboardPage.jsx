@@ -1,10 +1,11 @@
+import { useNavigate } from 'react-router-dom'
 import { MainLayout } from '../layouts/MainLayout'
 import { Card, CardHeader, CardBody, Loading, Table, TableHead, TableBody, TableRow, TableHeader, TableCell } from '../components'
 import { useDashboardStats, useRecentBookings, useOccupancy, useHotelInfo, useUsers, usePayments } from '../hooks/useDashboard'
-import { BarChart3, Users, DoorOpen, TrendingUp, CreditCard, Building2, Calendar } from 'lucide-react'
+import { BarChart3, Users, DoorOpen, TrendingUp, CreditCard, Calendar } from 'lucide-react'
 import { format } from 'date-fns'
 
-const StatCard = ({ icon: Icon, label, value, color = 'blue', subtext = '' }) => {
+const StatCard = ({ icon: Icon, label, value, color = 'blue', subtext = '', onClick }) => {
   const colors = {
     blue: 'bg-blue-50 text-blue-600',
     green: 'bg-green-50 text-green-600',
@@ -15,7 +16,7 @@ const StatCard = ({ icon: Icon, label, value, color = 'blue', subtext = '' }) =>
   }
 
   return (
-    <Card>
+    <Card className={onClick ? 'cursor-pointer hover:shadow-lg transition-shadow' : ''} onClick={onClick}>
       <div className="flex items-center justify-between">
         <div>
           <p className="text-gray-600 text-sm font-medium">{label}</p>
@@ -31,6 +32,7 @@ const StatCard = ({ icon: Icon, label, value, color = 'blue', subtext = '' }) =>
 }
 
 export const DashboardPage = () => {
+  const navigate = useNavigate()
   const { data: stats, isLoading: statsLoading } = useDashboardStats()
   const { data: recentBookings, isLoading: bookingsLoading } = useRecentBookings()
   const { data: occupancy } = useOccupancy(30)
@@ -42,13 +44,8 @@ export const DashboardPage = () => {
 
   if (isLoading) return <MainLayout><Loading /></MainLayout>
 
-  // Calculate occupancy rate from occupancy data
   const currentOccupancy = occupancy?.[occupancy.length - 1]?.occupancyRate || 0
-
-  // Calculate total payments
   const totalPayments = payments?.reduce((sum, p) => sum + (p.amount || 0), 0) || 0
-
-  // Get active users count
   const activeUsers = users?.filter(u => u.status === 'ACTIVE').length || 0
 
   return (
@@ -60,32 +57,38 @@ export const DashboardPage = () => {
           {hotelInfo && <p className="text-sm text-gray-500 mt-1">{hotelInfo.name}</p>}
         </div>
 
-        {/* Main Stats Grid */}
+        {/* Main Stats Grid - Clickable */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard
-            icon={DoorOpen}
-            label="Total Rooms"
-            value={stats?.totalRooms || 0}
-            color="blue"
-          />
-          <StatCard
-            icon={Users}
-            label="Occupied Rooms"
-            value={stats?.occupiedRooms || 0}
-            subtext={`${currentOccupancy}% occupancy`}
-            color="green"
-          />
-          <StatCard
             icon={BarChart3}
-            label="Total Bookings"
+            label="Statistics"
             value={stats?.totalBookings || 0}
+            subtext="Click to view details"
             color="purple"
+            onClick={() => navigate('/dashboard/stats')}
+          />
+          <StatCard
+            icon={Calendar}
+            label="Occupancy"
+            value={`${currentOccupancy}%`}
+            subtext="Click to view trends"
+            color="green"
+            onClick={() => navigate('/dashboard/occupancy')}
+          />
+          <StatCard
+            icon={DoorOpen}
+            label="Bookings"
+            value={stats?.totalBookings || 0}
+            subtext="Click to view analytics"
+            color="blue"
+            onClick={() => navigate('/dashboard/bookings')}
           />
           <StatCard
             icon={TrendingUp}
-            label="Monthly Revenue"
+            label="Revenue"
             value={`${stats?.monthlyRevenue || 0} ETB`}
             color="orange"
+            subtext="Monthly total"
           />
         </div>
 

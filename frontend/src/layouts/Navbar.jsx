@@ -6,7 +6,7 @@ export const Navbar = () => {
 
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-10">
-      <div className="ml-64 px-6 py-4 flex items-center justify-between">
+      <div className="px-6 py-4 flex items-center justify-between">
         <div>
           <h2 className="text-xl font-semibold text-gray-900">
             {user?.hotel?.name || 'Hotel Management'}

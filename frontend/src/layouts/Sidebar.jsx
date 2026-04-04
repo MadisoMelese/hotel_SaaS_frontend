@@ -33,23 +33,22 @@ export const Sidebar = () => {
 
   return (
     <>
-      {/* Mobile menu button */}
+      {/* Menu button - visible on all devices */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="md:hidden fixed top-4 left-4 z-40 p-2 bg-white rounded-lg shadow-md"
+        className="fixed top-4 left-4 z-40 p-2 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
       >
         {isOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
-      {/* Sidebar */}
+      {/* Sidebar - only visible on mobile/tablet */}
       <aside
         className={clsx(
-          'fixed left-0 top-0 h-screen w-64 bg-gray-900 text-white transition-transform duration-300 z-30',
-          'md:translate-x-0',
-          isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+          'fixed left-0 top-0 h-screen w-64 bg-gray-900 text-white transition-transform duration-300 z-30 lg:hidden',
+          isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
-        <div className="p-6">
+        <div className="p-6 pt-16">
           <h1 className="text-2xl font-bold">Hotel SaaS</h1>
         </div>
 
@@ -90,7 +89,7 @@ export const Sidebar = () => {
       {/* Mobile overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 md:hidden z-20"
+          className="fixed inset-0 bg-black bg-opacity-50 lg:hidden z-20"
           onClick={() => setIsOpen(false)}
         />
       )}
