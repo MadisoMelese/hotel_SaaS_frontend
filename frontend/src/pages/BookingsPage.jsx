@@ -54,7 +54,16 @@ export const BookingsPage = () => {
     if (!validateForm()) return
 
     try {
-      await createMutation.mutateAsync(formData)
+      // Convert form data to correct types for backend
+      const bookingData = {
+        roomId: formData.roomId,
+        guestId: formData.guestId,
+        checkIn: new Date(formData.checkIn).toISOString(),
+        checkOut: new Date(formData.checkOut).toISOString(),
+        adults: parseInt(formData.adults, 10),
+        children: parseInt(formData.children, 10),
+      }
+      await createMutation.mutateAsync(bookingData)
       handleCloseModal()
     } catch (error) {
       setErrors({ submit: error.response?.data?.error?.message || 'Failed to create booking' })
