@@ -9,6 +9,7 @@ import { DashboardStatsPage } from '../pages/DashboardStatsPage'
 import { DashboardOccupancyPage } from '../pages/DashboardOccupancyPage'
 import { DashboardBookingsPage } from '../pages/DashboardBookingsPage'
 import { RoomsPage } from '../pages/RoomsPage'
+import { RoomTypesPage } from '../pages/RoomTypesPage'
 import { BookingsPage } from '../pages/BookingsPage'
 import { GuestsPage } from '../pages/GuestsPage'
 import { NotFoundPage } from '../pages/NotFoundPage'
@@ -59,6 +60,14 @@ export const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <RoomsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/room-types"
+          element={
+            <ProtectedRoute>
+              <RoomTypesPage />
             </ProtectedRoute>
           }
         />

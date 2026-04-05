@@ -37,3 +37,14 @@ export const roomsService = {
     return response.data.data
   },
 }
+
+  updateRoomType: async (id, data) => {
+    const response = await api.put(`/rooms/types/${id}`, data)
+    return response.data.data
+  },
+
+  deleteRoomType: async (id) => {
+    const response = await api.delete(`/rooms/types/${id}`)
+    return response.data
+  },
+}

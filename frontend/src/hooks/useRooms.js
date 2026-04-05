@@ -65,6 +65,31 @@ export const useCreateRoomType = () => {
     mutationFn: (data) => roomsService.createRoomType(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['roomTypes'] })
+      queryClient.invalidateQueries({ queryKey: ['rooms'] })
+    },
+  })
+}
+
+export const useUpdateRoomType = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, data }) => roomsService.updateRoomType(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['roomTypes'] })
+      queryClient.invalidateQueries({ queryKey: ['rooms'] })
+    },
+  })
+}
+
+export const useDeleteRoomType = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id) => roomsService.deleteRoomType(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['roomTypes'] })
+      queryClient.invalidateQueries({ queryKey: ['rooms'] })
     },
   })
 }

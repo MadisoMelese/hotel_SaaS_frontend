@@ -20,6 +20,7 @@ export const Sidebar = () => {
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
     { icon: DoorOpen, label: 'Rooms', path: '/rooms' },
+    { icon: DoorOpen, label: 'Room Types', path: '/room-types' },
     { icon: Calendar, label: 'Bookings', path: '/bookings' },
     { icon: Users, label: 'Guests', path: '/guests' },
   ]
