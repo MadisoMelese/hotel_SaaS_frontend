@@ -59,10 +59,17 @@ export const RoomsPage = () => {
     if (!validateForm()) return
 
     try {
+      const roomData = {
+        roomNumber: formData.roomNumber,
+        roomTypeId: formData.roomTypeId,
+        floor: formData.floor ? parseInt(formData.floor, 10) : null,
+        status: formData.status,
+      }
+
       if (editingRoom) {
-        await updateMutation.mutateAsync({ id: editingRoom.id, data: formData })
+        await updateMutation.mutateAsync({ id: editingRoom.id, data: roomData })
       } else {
-        await createMutation.mutateAsync(formData)
+        await createMutation.mutateAsync(roomData)
       }
       handleCloseModal()
     } catch (error) {
