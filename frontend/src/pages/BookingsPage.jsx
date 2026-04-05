@@ -4,13 +4,14 @@ import { Card, CardBody, Button, Input, Select, Table, TableHead, TableBody, Tab
 import { useBookings, useCreateBooking, useConfirmBooking, useCheckIn, useCheckOut, useCancelBooking } from '../hooks/useBookings'
 import { useRooms } from '../hooks/useRooms'
 import { useGuests } from '../hooks/useGuests'
-import { Plus, CheckCircle, LogIn, LogOut, X } from 'lucide-react'
+import { Plus, CheckCircle, LogIn, LogOut, X, AlertCircle } from 'lucide-react'
 import { format } from 'date-fns'
 
 export const BookingsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [formData, setFormData] = useState({ roomId: '', guestId: '', checkIn: '', checkOut: '', adults: 1, children: 0 })
   const [errors, setErrors] = useState({})
+  const [submitError, setSubmitError] = useState('')
 
   const { data: bookings, isLoading } = useBookings()
   const { data: rooms } = useRooms()
@@ -24,19 +25,35 @@ export const BookingsPage = () => {
   const handleOpenModal = () => {
     setFormData({ roomId: '', guestId: '', checkIn: '', checkOut: '', adults: 1, children: 0 })
     setErrors({})
+    setSubmitError('')
     setIsModalOpen(true)
   }
 
   const handleCloseModal = () => {
     setIsModalOpen(false)
+    setSubmitError('')
   }
 
   const validateForm = () => {
     const newErrors = {}
+    
     if (!formData.roomId) newErrors.roomId = 'Room is required'
     if (!formData.guestId) newErrors.guestId = 'Guest is required'
     if (!formData.checkIn) newErrors.checkIn = 'Check-in date is required'
     if (!formData.checkOut) newErrors.checkOut = 'Check-out date is required'
+    
+    // Validate date comparison
+    if (formData.checkIn && formData.checkOut) {
+      const checkInDate = new Date(formData.checkIn)
+      const checkOutDate = new Date(formData.checkOut)
+      
+      if (checkOutDate <= checkInDate) {
+        newErrors.checkOut = 'Check-out date must be after check-in date'
+      }
+    }
+    
+    if (formData.adults < 1) newErrors.adults = 'At least 1 adult is required'
+    
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -44,13 +61,38 @@ export const BookingsPage = () => {
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
+    
+    // Clear error for this field when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }))
+    }
+    
+    // Real-time validation for date comparison
+    if (name === 'checkOut' && formData.checkIn) {
+      const checkInDate = new Date(formData.checkIn)
+      const checkOutDate = new Date(value)
+      if (checkOutDate <= checkInDate) {
+        setErrors((prev) => ({ ...prev, checkOut: 'Check-out date must be after check-in date' }))
+      } else {
+        setErrors((prev) => ({ ...prev, checkOut: '' }))
+      }
+    }
+    
+    if (name === 'checkIn' && formData.checkOut) {
+      const checkInDate = new Date(value)
+      const checkOutDate = new Date(formData.checkOut)
+      if (checkOutDate <= checkInDate) {
+        setErrors((prev) => ({ ...prev, checkOut: 'Check-out date must be after check-in date' }))
+      } else {
+        setErrors((prev) => ({ ...prev, checkOut: '' }))
+      }
     }
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setSubmitError('')
+    
     if (!validateForm()) return
 
     try {
@@ -66,7 +108,29 @@ export const BookingsPage = () => {
       await createMutation.mutateAsync(bookingData)
       handleCloseModal()
     } catch (error) {
-      setErrors({ submit: error.response?.data?.error?.message || 'Failed to create booking' })
+      // Parse backend error response
+      const errorData = error.response?.data?.error
+      
+      if (errorData?.details && Array.isArray(errorData.details)) {
+        // Handle validation errors with details
+        const fieldErrors = {}
+        const messages = []
+        
+        errorData.details.forEach((detail) => {
+          if (detail.field) {
+            fieldErrors[detail.field] = detail.message
+          }
+          messages.push(detail.message)
+        })
+        
+        setErrors(fieldErrors)
+        setSubmitError(`${errorData.message}: ${messages.join(', ')}`)
+      } else if (errorData?.message) {
+        // Handle simple error message
+        setSubmitError(errorData.message)
+      } else {
+        setSubmitError(error.response?.data?.message || 'Failed to create booking')
+      }
     }
   }
 
@@ -219,8 +283,13 @@ export const BookingsPage = () => {
 
       {/* Modal */}
       <Modal isOpen={isModalOpen} onClose={handleCloseModal} title="Create New Booking">
-        {errors.submit && (
-          <Alert type="error" message={errors.submit} className="mb-4" />
+        {submitError && (
+          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex gap-3">
+            <AlertCircle size={20} className="text-red-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-medium text-red-800">{submitError}</p>
+            </div>
+          </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -266,6 +335,7 @@ export const BookingsPage = () => {
             name="adults"
             value={formData.adults}
             onChange={handleChange}
+            error={errors.adults}
             min="1"
           />
 
