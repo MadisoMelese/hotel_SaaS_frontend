@@ -36,7 +36,6 @@ export const roomsService = {
     const response = await api.post('/rooms/types', data)
     return response.data.data
   },
-}
 
   updateRoomType: async (id, data) => {
     const response = await api.put(`/rooms/types/${id}`, data)
