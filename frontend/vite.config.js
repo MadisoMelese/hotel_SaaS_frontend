@@ -5,6 +5,9 @@ export default defineConfig({
   plugins: [
         tailwindcss(),
     react()],
+      build: {
+    outDir: "dist"
+  },
   server: {
     port: 5173,
     proxy: {
